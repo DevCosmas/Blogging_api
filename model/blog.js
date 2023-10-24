@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const appError = require('../utils/errorhandler')
 
 const blogSchema = new Schema({
     title: {
@@ -68,26 +69,14 @@ blogSchema.methods.calReadTime = function (content) {
 blogSchema.pre(/^find/, function (next) {
     this.populate({
         path: 'author',
-        select: 'firstname -_id '
-    })
-    next()
-})
+        localField: 'id', 
+        foreignField: '_id',
+        model: 'user',
+        select: 'firstname id'
+    });
+    next();
+});
 
-// blogSchema.pre('save', function (next) {
-
-
-//     if (this.title && typeof this.title === 'string') {
-//         this.title = this.title.toLowerCase();
-//     }
-//     if (this.tags && typeof this.tags === 'string') {
-//         this.tags = this.tags.toLowerCase();
-//     }
-//     if (this.author && typeof this.author === 'string') {
-//         this.author = this.author.toLowerCase();
-//     }
-//     next();
-
-// });
 
 
 

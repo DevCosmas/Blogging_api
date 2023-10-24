@@ -18,17 +18,14 @@ const sendEmail = async (message, user) => {
       text: message,
     };
 
-    // Send the email and wait for the result using await
+    
     const info = await transporter.sendMail(mailOptions);
-
     console.log('Email sent successfully:', info);
 
     return info;
   } catch (error) {
-    // Create an instance of appError with an error message
+    
     const emailError = new appError('Email could not be sent', 500);
-
-    // Log the error and throw it to handle it at a higher level
     console.error('Email error:', error);
     throw emailError;
   }

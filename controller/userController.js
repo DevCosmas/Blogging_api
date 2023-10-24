@@ -42,7 +42,6 @@ async function Login(req, res, next) {
         const token = await jwtToken(isValidUser._id)
 
         res.cookie('jwt', token, { httpOnly: true });
-        // console.log(req.cookies)
         res.status(200).json({ result: "SUCCESS", Message: 'You are logged in now', token, user: isValidUser })
     } catch (err) {
         next(new appError(err, 500))

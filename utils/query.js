@@ -24,9 +24,21 @@ class BlogSearch {
         }
     }
 
+    async myBlog() {
+        const searchQuery = { ...this.req.query };
+        const page = parseInt(this.req.query.page) || 1;
+        const pageSize = 20;
+        const skip = (page - 1) * pageSize;
+
+        if (searchQuery.state === 'draft' || searchQuery.state === 'published') {
+            await this.searchByState(searchQuery.state, skip, pageSize);
+        }else {
+            await this.allMyBlogs(skip, pageSize);
+        }
+    }
     async searchByTitle(title, skip, pageSize) {
         const nonCaseSensitive = new RegExp(title, 'i');
-        const blogs = await blogModel.find({ title: nonCaseSensitive })
+        const blogs = await blogModel.find({ title: nonCaseSensitive,state: "published"  })
             .skip(skip)
             .limit(pageSize)
             .sort({ timestamp: -1 })
@@ -37,7 +49,7 @@ class BlogSearch {
 
     async searchByTags(tags, skip, pageSize) {
         const nonCaseSensitive = new RegExp(tags, 'i');
-        const blogs = await blogModel.find({ tags: nonCaseSensitive })
+        const blogs = await blogModel.find({ tags: nonCaseSensitive,state: "published"  })
             .skip(skip)
             .limit(pageSize)
             .sort({ timestamp: -1 })
@@ -50,7 +62,7 @@ class BlogSearch {
         const firstname = authorName;
         console.log(firstname);
         const nonCaseSensitive = new RegExp(firstname, 'i');
-        const blogs = await blogModel.find({ 'author.firstname': nonCaseSensitive })
+        const blogs = await blogModel.find({ 'author.firstname': nonCaseSensitive, state: "published" })
             .skip(skip)
             .limit(pageSize)
             .sort({ timestamp: -1 })
@@ -58,9 +70,30 @@ class BlogSearch {
             .sort({ readingTime: -1 })
         this.sendResponse(blogs);
     }
+    async searchByState(state, skip, pageSize) {
+        const user = this.req.user.id
+        const nonCaseSensitive = new RegExp(state, 'i');
+        const blogs = await blogModel.find({ state: nonCaseSensitive, author: user })
+            .skip(skip)
+            .limit(pageSize)
+            .sort({ timestamp: -1 })
+            .sort({ readCount: -1 })
+            .sort({ readingTime: -1 })
+        this.sendResponse(blogs);
+    }
+    async allMyBlogs(skip, pageSize) {
+        const {id} =this.req.user
+        const blogs = await blogModel.find({ author:id})
+            .skip(skip)
+            .limit(pageSize)
+            .sort({ timestamp: -1 })
+            .sort({ readCount: -1 })
+            .sort({ readingTime: -1 });
+        this.sendResponse(blogs);
+    }
 
     async getAllBlogs(skip, pageSize) {
-        const blogs = await blogModel.find()
+        const blogs = await blogModel.find({ state: "published" })
             .skip(skip)
             .limit(pageSize)
             .sort({ timestamp: -1 })
