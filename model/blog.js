@@ -36,11 +36,14 @@ const blogSchema = new Schema({
         default: 'draft',
         enum: ['draft', 'published']
     },
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'comment' }],
-    ratings: [{ type: mongoose.Schema.Types.ObjectId, ref: 'rating' }],
     ratingAvg: {
         type: Number,
-        default: 3.5
+        default: 3.5,
+        set:val=>Math.round(val*10)/10
+    },
+    numOfRating: {
+        type: Number,
+        default: 0
     },
     timestamp: {
         type: Date,
@@ -69,13 +72,18 @@ blogSchema.methods.calReadTime = function (content) {
 blogSchema.pre(/^find/, function (next) {
     this.populate({
         path: 'author',
-        localField: 'id', 
+        localField: 'id',
         foreignField: '_id',
         model: 'user',
         select: 'firstname id'
     });
     next();
-});
+})
+blogSchema.virtual('reviews', {
+    ref: 'reviews',
+    foreignField: 'blog',
+    localField: '_id'
+})
 
 
 

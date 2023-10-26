@@ -16,7 +16,11 @@ const createBlog = async (req, res, next) => {
         const newBlog = await blogModel.create(blogPost)
         newBlog.readingTime = newBlog.calReadTime(blogPost.bodyContent)
         if (!newBlog) return next(new appError('this blog post was not created', 400))
-        res.status(201).json({ result: 'SUCCESS', message: "a new blog post has been created", newBlog })
+        res.status(201).json({
+            result: 'SUCCESS',
+            message: "a new blog post has been created",
+            newBlog
+        })
     } catch (err) {
         next(new appError(err, 500))
     }
@@ -85,7 +89,11 @@ const updateBlog = async (req, res, next) => {
 
                 const updatedBlog = await blogModel.updateOne({ _id: req.params.blogId }, updates);
 
-                res.status(200).json({ result: 'SUCCESS', message: 'Blog updated successfully', updatedBlog });
+                res.status(200).json({
+                    result: 'SUCCESS',
+                    message: 'Blog updated successfully',
+                    updatedBlog
+                });
             } else {
                 next(new appError('You are not authorized to update this blog', 403));
             }
@@ -101,21 +109,52 @@ const deleteBlog = async (req, res, next) => {
     if (!blog) return next(new appError('this blog is not found', 404))
     if (blog.author.id === req.user.id) {
         const deletedBlog = await blogModel.deleteOne({ _id: req.params.blogId });
-        res.status(203).json({ result: 'SUCCESS', message: 'Blog has been deleted successfully', deletedBlog });
+        res.status(203).json({
+            result: 'SUCCESS',
+            message: 'Blog has been deleted successfully',
+            deletedBlog
+        });
     } else {
         next(new appError('You are not authorized to delete this blog', 403));
     }
 }
 
 const publishBlog = async (req, res, next) => {
-    const blog = await blogModel.findById(req.params.blogId)
-    if (!blog) return next(new appError('this blog is not found', 404))
-    if (blog.author.id === req.user.id) {
-        blog.state = "published"
-        blog.save()
-        res.status(200).json({ result: 'SUCCESS', message: 'Blog has been published successfully', blog })
-    } else {
-        next(new appError('You are not authorized to publish this blog', 403));
+    try {
+        const blog = await blogModel.findById(req.params.blogId)
+        if (!blog) return next(new appError('this blog is not found', 404))
+        if (blog.author.id === req.user.id) {
+            blog.state = "published"
+            blog.save()
+            res.status(200).json({
+                result: 'SUCCESS',
+                message: 'Blog has been published successfully',
+                blog
+            })
+        } else {
+            next(new appError('You are not authorized to publish this blog', 403));
+        }
+    } catch (err) {
+        next(new appError(err, 500));
+    }
+}
+
+const readBlog = async (req, res, next) => {
+
+    try {
+        const blog = await blogModel.findById(req.params.blogId).populate('reviews')
+        if (!blog) return next(new appError('this blog is not found', 404))
+        else {
+            blog.readCount = (blog.readCount || 0) + 1;
+            await blog.save()
+            res.status(200).json({
+                result: 'SUCCESS',
+                message: 'Thank you for reading the article',
+                blog
+            })
+        }
+    } catch (err) {
+        next(new appError(err, 500));
     }
 }
 
@@ -125,5 +164,6 @@ module.exports = {
     myBlog,
     updateBlog,
     deleteBlog,
-    publishBlog
+    publishBlog,
+    readBlog
 }

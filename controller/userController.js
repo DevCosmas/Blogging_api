@@ -111,7 +111,6 @@ const resetPassword = async (req, res, next) => {
         await user.save()
         const token = await jwtToken(user._id)
         res.cookie('jwt', token, { httpOnly: true });
-
         res.status(200).json({ message: 'a new pasword has been set', token, user })
 
 
