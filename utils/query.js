@@ -97,8 +97,7 @@ class BlogSearch {
             .skip(skip)
             .limit(pageSize)
             .sort({ timestamp: -1 })
-            .sort({ readCount: -1 })
-            .sort({ readingTime: -1 });
+            
         this.sendResponse(blogs);
     }
 

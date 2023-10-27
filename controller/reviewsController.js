@@ -51,9 +51,9 @@ const updateReviews = async (req, res, next) => {
                 updateReviews
             })
         }
-        else{
+        else {
             next(new appError('user is not permitted to carry action', 401))
-           }
+        }
     } catch (err) {
         next(new appError(err, 500))
     }
@@ -70,9 +70,9 @@ const deleteReviews = async (req, res, next) => {
                 message: 'review has been deleted for this blog',
             })
         }
-        else{
+        else {
             next(new appError('user is not permitted to carry action', 401))
-           }
+        }
     } catch (err) {
         next(new appError(err, 500))
     }

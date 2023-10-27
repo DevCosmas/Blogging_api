@@ -15,9 +15,8 @@ mongoDbConnection()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 // app.use('/api/v1', reviewRoute)
-app.use('/api/v1', userRoute)
 app.use('/api/v1', blogRoute)
-
+app.use('/api/v1', userRoute)
 
 
 

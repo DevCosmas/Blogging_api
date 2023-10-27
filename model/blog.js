@@ -6,7 +6,7 @@ const blogSchema = new Schema({
     title: {
         type: String,
         required: [true, 'a blog must have a title'],
-        toLowerCase: true
+        unique: true
     },
     description: {
         type: String,
@@ -14,8 +14,10 @@ const blogSchema = new Schema({
     },
     author: {
         type: mongoose.Schema.ObjectId,
-        ref: 'user',
-        toLowerCase: true
+        ref: 'user'
+    },
+    coverImg: {
+        type: String
     },
     readCount: {
         type: Number,
@@ -25,7 +27,8 @@ const blogSchema = new Schema({
         type: Number
     },
     bodyContent: {
-        type: String
+        type: String,
+        required: [true, 'a blog must have content']
     },
     tags: {
         type: String,
@@ -39,7 +42,7 @@ const blogSchema = new Schema({
     ratingAvg: {
         type: Number,
         default: 3.5,
-        set:val=>Math.round(val*10)/10
+        set: val => Math.round(val * 10) / 10
     },
     numOfRating: {
         type: Number,

@@ -10,14 +10,14 @@ router.get("/allBlog", blogController.allBlog)
 router.get("/readBlog/:blogId", blogController.readBlog)
 
 
-router.use(authController.isAuthenticated)
-router.use('/:blogId', reviewRoute)
+// router.use(authController.isAuthenticated)
+router.use('/:blogId', authController.isAuthenticated, reviewRoute)
 // ONLY ACCESSABLE BY LOGGED IN USERS
-router.post("/createblog", blogController.createBlog)
-router.get("/myBlog", blogController.myBlog)
-router.patch("/updateBlog/:blogId", blogController.updateBlog)
-router.delete("/deleteBlog/:blogId", blogController.deleteBlog)
-router.patch("/publishBlog/:blogId", blogController.publishBlog)
+router.post("/createblog", authController.isAuthenticated, blogController.createBlog)
+router.get("/myBlog", authController.isAuthenticated, blogController.myBlog)
+router.patch("/updateBlog/:blogId", authController.isAuthenticated, blogController.updateBlog)
+router.delete("/deleteBlog/:blogId", authController.isAuthenticated, blogController.deleteBlog)
+router.patch("/publishBlog/:blogId", authController.isAuthenticated, blogController.publishBlog)
 
 
 module.exports = router

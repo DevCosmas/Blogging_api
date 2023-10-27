@@ -51,9 +51,14 @@ async function Login(req, res, next) {
 
 async function updateProfile(req, res, next) {
     try {
+       if(req.user.active===true){
         const updatesDetails = req.body
         const updatedUser = userModel.findByIdAndUpdate(req.user, updatesDetails, { new: true, runValidators: true })
         if (updatedUser) res.status(200).json({ result: "Success", message: 'user details has been succefully updated' })
+       }
+        else {
+        return next(new appError('User does not exist kindly signUp', 404))
+    }
     } catch (err) {
         next(new appError(err, 500))
     }
@@ -61,9 +66,10 @@ async function updateProfile(req, res, next) {
 }
 async function deleteAcct(req, res, next) {
     try {
-
-        const deleteUser = await userModel.findByIdAndUpdate(req.user._id)
-        if (deleteUser) res.status(203).json({ result: "Success", message: 'Account deletion successful' })
+        const user = await userModel.findById(req.user.id).select('-password')
+        user.active = false
+        await user.save()
+        if (user) res.status(203).json({ result: "Success", message: 'Account deletion successful', user })
     } catch (err) {
         next(new appError(err, 500))
     }
