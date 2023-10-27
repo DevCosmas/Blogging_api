@@ -19,6 +19,8 @@ app.use(express.urlencoded({ extended: true }))
 app.post("/api/v1/signUp", userController.signUp)
 app.post("/api/v1/login", userController.Login)
 app.post("/api/v1/logout", userController.logout)
+app.post("/api/v1/activateAcct", userController.reactivateAcct)
+
 
 app.use('/api/v1', blogRoute)
 app.use('/api/v1', userRoute)

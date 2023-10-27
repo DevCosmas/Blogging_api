@@ -51,14 +51,14 @@ async function Login(req, res, next) {
 
 async function updateProfile(req, res, next) {
     try {
-       if(req.user.active===true){
-        const updatesDetails = req.body
-        const updatedUser = userModel.findByIdAndUpdate(req.user, updatesDetails, { new: true, runValidators: true })
-        if (updatedUser) res.status(200).json({ result: "Success", message: 'user details has been succefully updated' })
-       }
+        if (req.user.active === true) {
+            const updatesDetails = req.body
+            const updatedUser = userModel.findByIdAndUpdate(req.user, updatesDetails, { new: true, runValidators: true })
+            if (updatedUser) res.status(200).json({ result: "Success", message: 'user details has been succefully updated' })
+        }
         else {
-        return next(new appError('User does not exist kindly signUp', 404))
-    }
+            return next(new appError('User does not exist kindly signUp', 404))
+        }
     } catch (err) {
         next(new appError(err, 500))
     }
@@ -124,4 +124,18 @@ const resetPassword = async (req, res, next) => {
         new appError(err, 500)
     }
 }
-module.exports = { signUp, updateProfile, deleteAcct, Login, logout, forgetPassword, resetPassword }
+
+const reactivateAcct = async (req, res, next) => {
+    try {
+        const user = await userModel.findOne({ email: req.body.email }).select('-password')
+        if (!user) next(new appError('this user does not exist', 404))
+        user.active = true
+        const message = `Hey ${user.firstname}, we are excited to have you on board with us .\n kindly confirm your email.`
+        await sendEmail(message, user)
+        await user.save()
+        res.status(200).json({ message: `welcome back ${user.username}. your account has been re-activated`, user })
+    } catch (err) {
+        new appError(err, 500)
+    }
+}
+module.exports = { signUp, updateProfile, deleteAcct, Login, logout, forgetPassword, resetPassword, reactivateAcct }
