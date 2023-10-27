@@ -9,11 +9,13 @@ Click on the link below to read full documentation. And automatically test api w
 
 [DOCUMENTAION](https://documenter.getpostman.com/view/28599121/2s9YRDzqmP)
 # TECH STACK
-Nodejs
+Nodejs , javascript
 # DATABASES
  * Mongodb
- * [ERD](https://drawsql.app/teams/devcosmas/diagrams/blogging)
+ * [ERD DIAGRAM](https://drawsql.app/teams/devcosmas/diagrams/blogging)
 
+# VIEWS
+Coming soon....
 
 # HOW TO RUN PROJECT 
 * Clone The repo and cd into your base folder
