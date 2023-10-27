@@ -5,6 +5,7 @@ const appError = require('../utils/errorhandler')
 
 const makeReviews = async (req, res, next) => {
     try {
+        if (!req.user.active === true) return next(new appError('You are not authorized. Kindly sign up or login'))
         const review = req.body
         if (!review.user) review.user = req.user.id
         if (!review.blog) review.blog = req.params.blogId
@@ -36,6 +37,7 @@ const seeReviews = async (req, res, next) => {
 }
 const updateReviews = async (req, res, next) => {
     try {
+        if (!req.user.active === true) return next(new appError('You are not authorized. Kindly sign up or login'))
         const review = await reviewModel.findOne({ blog: req.params.blogId })
         if (review.user.id === req.user.id) {
             const update = req.body
@@ -61,6 +63,7 @@ const updateReviews = async (req, res, next) => {
 
 const deleteReviews = async (req, res, next) => {
     try {
+        if (!req.user.active === true) return next(new appError('You are not authorized. Kindly sign up or login'))
         const review = await reviewModel.findOne({ blog: req.params.blogId })
         if (review.user.id === req.user.id) {
             const deleteReviews = await reviewModel.findByIdAndDelete(req.params.reviewId)

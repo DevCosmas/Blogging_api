@@ -3,9 +3,6 @@ const userController = require('./../controller/userController')
 const authController = require('./../controller/authController')
 const router = express.Router()
 
-router.post("/signUp", userController.signUp)
-router.post("/login", userController.Login)
-router.post("/logout", userController.logout)
 
 router.use(authController.isAuthenticated)
 router.delete("/delete", userController.deleteAcct)

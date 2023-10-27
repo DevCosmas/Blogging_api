@@ -1,8 +1,8 @@
 require('dotenv').config()
 const express = require('express')
 const { mongoDbConnection } = require('./config')
+const userController = require('./controller/userController')
 const userRoute = require('./routes/userRoute')
-// const reviewRoute= require('./routes/reviewsRoutes')
 const blogRoute = require('./routes/blogRoutes')
 
 
@@ -14,7 +14,12 @@ mongoDbConnection()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-// app.use('/api/v1', reviewRoute)
+
+//express middleware really dealt with me here. this is the only possible solution i have for now
+app.post("/api/v1/signUp", userController.signUp)
+app.post("/api/v1/login", userController.Login)
+app.post("/api/v1/logout", userController.logout)
+
 app.use('/api/v1', blogRoute)
 app.use('/api/v1', userRoute)
 

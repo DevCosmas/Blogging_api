@@ -64,10 +64,11 @@ const myBlog = (req, res, next) => {
 const updateBlog = async (req, res, next) => {
 
 
-    // if (!req.user && !req.user.active === true) return next(new appError('You are not authorized. Kindly sign up or login'));
+   
     
 
     try {
+        if (!req.user.active === true) return next(new appError('You are not authorized. Kindly sign up or login'));
         const blog = await blogModel.findById(req.params.blogId);
         if (!blog) return next(new appError('this blog is not found', 404))
 
@@ -106,6 +107,8 @@ const updateBlog = async (req, res, next) => {
 
 
 const deleteBlog = async (req, res, next) => {
+    if(!req.user.active === true) return next(new appError('You are not authorized. Kindly sign up or login'));
+
     const blog = await blogModel.findById(req.params.blogId)
     if (!blog) return next(new appError('this blog is not found', 404))
     if (blog.author.id === req.user.id) {
@@ -121,7 +124,9 @@ const deleteBlog = async (req, res, next) => {
 }
 
 const publishBlog = async (req, res, next) => {
+    
     try {
+        if (!req.user.active === true) return next(new appError('You are not authorized. Kindly sign up or login'))
         const blog = await blogModel.findById(req.params.blogId)
         if (!blog) return next(new appError('this blog is not found', 404))
         if (blog.author.id === req.user.id) {
