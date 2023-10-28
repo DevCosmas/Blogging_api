@@ -18,11 +18,11 @@ const sendEmail = async (message, user) => {
       text: message,
     };
 
-    
+
     const info = await transporter.sendMail(mailOptions);
     return info;
   } catch (error) {
-    
+
     const emailError = new appError('Email could not be sent', 500);
     console.error('Email error:', error);
     throw emailError;

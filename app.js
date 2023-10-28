@@ -4,6 +4,7 @@ const { mongoDbConnection } = require('./config')
 const userController = require('./controller/userController')
 const userRoute = require('./routes/userRoute')
 const blogRoute = require('./routes/blogRoutes')
+const errorHandler = require('./controller/errorHandler')
 
 
 const PORT = process.env.PORT
@@ -28,7 +29,11 @@ app.use('/api/v1', userRoute)
 
 
 
+app.all('*', (req, res, next) => {
+    next(new appError('page not found', 404))
+});
 
+app.use(errorHandler)
 app.listen(PORT, () => {
     console.log('this is server is up and running')
 })

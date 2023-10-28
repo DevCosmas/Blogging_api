@@ -1,4 +1,6 @@
 const { blogModel } = require('./../model/blog');
+const { userModel } = require('./../model/user');
+
 
 class BlogSearch {
     constructor(req, res) {
@@ -32,13 +34,13 @@ class BlogSearch {
 
         if (searchQuery.state === 'draft' || searchQuery.state === 'published') {
             await this.searchByState(searchQuery.state, skip, pageSize);
-        }else {
+        } else {
             await this.allMyBlogs(skip, pageSize);
         }
     }
     async searchByTitle(title, skip, pageSize) {
         const nonCaseSensitive = new RegExp(title, 'i');
-        const blogs = await blogModel.find({ title: nonCaseSensitive,state: "published"  })
+        const blogs = await blogModel.find({ title: nonCaseSensitive, state: "published" })
             .skip(skip)
             .limit(pageSize)
             .sort({ timestamp: -1 })
@@ -49,7 +51,7 @@ class BlogSearch {
 
     async searchByTags(tags, skip, pageSize) {
         const nonCaseSensitive = new RegExp(tags, 'i');
-        const blogs = await blogModel.find({ tags: nonCaseSensitive,state: "published"  })
+        const blogs = await blogModel.find({ tags: nonCaseSensitive, state: "published" })
             .skip(skip)
             .limit(pageSize)
             .sort({ timestamp: -1 })
@@ -60,9 +62,10 @@ class BlogSearch {
 
     async searchByAuthor(authorName, skip, pageSize) {
         const firstname = authorName;
-        console.log(firstname);
         const nonCaseSensitive = new RegExp(firstname, 'i');
-        const blogs = await blogModel.find({ 'author.firstname': nonCaseSensitive, state: "published" })
+        const author = await userModel.findOne({ firstname: nonCaseSensitive });
+        const authorId=author._id
+        const blogs = await blogModel.find({ author: authorId, state: "published" })
             .skip(skip)
             .limit(pageSize)
             .sort({ timestamp: -1 })
@@ -82,8 +85,8 @@ class BlogSearch {
         this.sendResponse(blogs);
     }
     async allMyBlogs(skip, pageSize) {
-        const {id} =this.req.user
-        const blogs = await blogModel.find({ author:id})
+        const { id } = this.req.user
+        const blogs = await blogModel.find({ author: id })
             .skip(skip)
             .limit(pageSize)
             .sort({ timestamp: -1 })
@@ -97,7 +100,7 @@ class BlogSearch {
             .skip(skip)
             .limit(pageSize)
             .sort({ timestamp: -1 })
-            
+
         this.sendResponse(blogs);
     }
 
