@@ -13,6 +13,7 @@ router.get("/readBlog/:blogId", blogController.readBlog)
 // router.use(authController.isAuthenticated)
 
 // ONLY ACCESSABLE BY LOGGED IN USERS
+
 router.post("/createblog", authController.isAuthenticated, blogController.createBlog)
 router.get("/myBlog", authController.isAuthenticated, blogController.myBlog)
 router.patch("/updateBlog/:blogId", authController.isAuthenticated, blogController.updateBlog)

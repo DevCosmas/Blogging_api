@@ -64,7 +64,7 @@ class BlogSearch {
         const firstname = authorName;
         const nonCaseSensitive = new RegExp(firstname, 'i');
         const author = await userModel.findOne({ firstname: nonCaseSensitive });
-        const authorId=author._id
+        const authorId = author._id
         const blogs = await blogModel.find({ author: authorId, state: "published" })
             .skip(skip)
             .limit(pageSize)
