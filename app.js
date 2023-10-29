@@ -5,6 +5,7 @@ const userController = require('./controller/userController')
 const userRoute = require('./routes/userRoute')
 const blogRoute = require('./routes/blogRoutes')
 const errorHandler = require('./controller/errorHandler')
+const appError = require('./utils/errorhandler')
 
 
 const PORT = process.env.PORT
